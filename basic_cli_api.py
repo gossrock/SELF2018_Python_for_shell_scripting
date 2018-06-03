@@ -12,15 +12,20 @@ class CommandResults(NamedTuple):
 BLANK_RESULTS = CommandResults(None, None, None, None)
 
 def run_command(command: str, stdin: Optional[str] = None, encoding: str = 'utf-8') -> CommandResults:
-    process = subprocess.Popen(shlex.split(command), stdin=PIPE, stdout=PIPE, stderr=PIPE, encoding=encoding)
-    stdout, stderr = process.communicate(stdin)
-    return_code = process.wait()
-    return CommandResults(command, return_code, stdout, stderr)
+    command = command.strip()
+    if '|' in command:
+        return run_pipeline(command.split('|'))
+    else:
+        process = subprocess.Popen(shlex.split(command), stdin=PIPE, stdout=PIPE, stderr=PIPE, encoding=encoding)
+        stdout, stderr = process.communicate(stdin)
+        return_code = process.wait()
+        return CommandResults(command, return_code, stdout, stderr)
 
-def run_pipeline(commands: List[str], encoding: str = 'utf-8') -> CommandResults:
+def run_pipeline(commands: List[str], stdin: Optional[str] = None, encoding: str = 'utf-8') -> CommandResults:
     command_results = BLANK_RESULTS
     for command in commands:
-        command_results = run_command(command, stdin=command_results.stdout, encoding=encoding)
+        command_results = run_command(command, stdin=stdin, encoding=encoding)
+        stdin = command_results.stdout
     return command_results
 
 def pipe(command1: str, command2: str, encoding: str = 'utf-8') -> CommandResults:
