@@ -15,7 +15,8 @@ def my_select(read_list: List[TextIO]=[],
 
 def stringify_stdin() -> str:
     stdin = ''
-    while sys.stdin in my_select(read_list=[sys.stdin]).ready_reads:
+    while sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
+    #while sys.stdin in my_select(read_list=[sys.stdin]).ready_reads:
         line = sys.stdin.readline()
         if line:
             stdin += line
@@ -23,12 +24,12 @@ def stringify_stdin() -> str:
             break
     return stdin
 
-def list_stdin() -> None:
-    for number, line in enumerate(STDIN.rstrip('\n').split('\n')):
+def list_stdin(stdin: str) -> None:
+    for number, line in enumerate(stdin.rstrip('\n').split('\n')):
         line = line.rstrip('\n')
         print(f'{number}) {line}')
 
 
 if __name__ == '__main__':
-    STDIN = stringify_stdin()
-    list_stdin()
+    stdin = stringify_stdin()
+    list_stdin(stdin)
