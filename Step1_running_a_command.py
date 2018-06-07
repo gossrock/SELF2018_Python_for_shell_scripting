@@ -56,16 +56,19 @@ def execute_with_bash_run(command: str) -> None:
 # subprocess.Popen variations
 def pipe_without_using_bash(command1: str, command2: str) -> None:
     process1 = subprocess.Popen(shlex.split(command1), stdout=PIPE, stderr=PIPE)
+    #print(type(process1.stdout))
     process2 = subprocess.Popen(shlex.split(command2), stdin=process1.stdout, stdout=PIPE, stderr=PIPE, encoding='utf-8')
-    return_code = process2.wait()
     stdout, stderr = process2.communicate()
+    return_code = process2.wait()
+
     print_Popen_results(f'{command1} | {command2}', return_code, stdout, stderr)
 
-#pipe_without_using_bash('ps aux', "grep 'python'")
+pipe_without_using_bash('ps aux', "grep 'python'")
 
 def pipe_without_using_bash2(command1: str, command2: str) -> None:
-    process1 = subprocess.Popen(shlex.split(command1), stdin=None, stdout=PIPE, stderr=PIPE, encoding='utf-8')
+    process1 = subprocess.Popen(shlex.split(command1), stdin=PIPE, stdout=PIPE, stderr=PIPE, encoding='utf-8')
     p1_stdout, p1_stderr = process1.communicate(None)
+    #print(type(p1_stdout))
     p1_return_code = process1.wait()
 
     process2 = subprocess.Popen(shlex.split(command2), stdin=PIPE, stdout=PIPE, stderr=PIPE, encoding='utf-8')
@@ -74,4 +77,4 @@ def pipe_without_using_bash2(command1: str, command2: str) -> None:
 
     print_Popen_results(f'{command1} | {command2}', p2_return_code, p2_stdout, p2_stderr)
 
-#pipe_without_using_bash2('ps aux', "grep 'python'")
+pipe_without_using_bash2('ps aux', "grep 'python'")

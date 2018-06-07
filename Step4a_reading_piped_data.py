@@ -15,12 +15,12 @@ def my_select(read_list: List[TextIO]=[],
 
 def stringify_stdin() -> str:
     stdin = ''
-    while sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
-    #while sys.stdin in my_select(read_list=[sys.stdin]).ready_reads:
+    #while sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
+    while sys.stdin in my_select(read_list=[sys.stdin]).ready_reads:
         line = sys.stdin.readline()
         if line:
             stdin += line
-        else: # an empty line means stdin has been closed
+        else: # an empty string means stdin has reached the end
             break
     return stdin
 

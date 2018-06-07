@@ -25,14 +25,16 @@ def parse_ps_data(ps_output: str) -> List[PSLineData]:
     return parsed_results
 
 def parse_ps_line_data(ps_line: str) -> PSLineData:
+    # prez      4649  0.3  0.0  36868  9152 pts/2    S+   12:44   0:00 python3 ./infinate_loop_to_kill.py
     line_data = colapse_spaces(ps_line).split(' ')
-    pid = line_data[1]
-    command = ' '.join(line_data[10:])
+    pid = line_data[1] # second item in list is the process id
+    command = ' '.join(line_data[10:]) # the command starts on item index 10 and following
     return PSLineData(pid, command)
 
 def find_and_kill() -> None:
     search_criteria = input('WHAT TYPE OF PROCESS SHOULD I SEARCH FOR? ')
     results = run(f'ps aux | grep {search_criteria}')
+    parsed_results: List[PSLineData] = []
     if results.stdout is not None:
         parsed_results = parse_ps_data(results.stdout)
 
@@ -169,6 +171,7 @@ def is_it_up(host: str) -> None:
         print(output)
 
 
-#is_it_up('localhost')
-#is_it_up('google.com')
+is_it_up('localhost')
+is_it_up('google.com')
 is_it_up('udeidhuiduidh')
+is_it_up('192.0.2.1')

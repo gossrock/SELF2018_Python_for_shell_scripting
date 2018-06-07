@@ -23,13 +23,14 @@ async def manager(loop: asyncio.AbstractEventLoop, total_tasks: int = 10, max_si
     while tasks_created < total_tasks:
         while len(task_list) < max_simultanious:
             await asyncio.sleep(0)
-            new_task_number = tasks_created + 1
+            tasks_created += 1
+            new_task_number = tasks_created
             task_name = f'Thing {new_task_number}'
             duration = random.randint(1, 3)
             give_up_number = random.randint(3, 9)
             task = asyncio.ensure_future(thing_to_run(f'Thing {new_task_number}', duration, give_up_number), loop=loop)
             task_list.append(task)
-            tasks_created += 1
+
 
         await task_finisher(task_list)
         await asyncio.sleep(0.1)

@@ -16,6 +16,7 @@ async def thing_to_run(thing:str, duration: float) -> None:
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
+    #asyncio.ensure_future(thing_to_run('tick', 1))
     asyncio.ensure_future(thing_to_run('Larry', 2))
     asyncio.ensure_future(thing_to_run('Moe', 3))
     asyncio.ensure_future(thing_to_run('Curly', 5))
