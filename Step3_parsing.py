@@ -15,7 +15,7 @@ class PSLineData(NamedTuple):
     pid: str
     command: str
     def __str__(self) -> str:
-        return f"COMMAND: '{self.command}'"
+        return f"'{self.command}'"
 
 def parse_ps_data(ps_output: str) -> List[PSLineData]:
     parsed_results: List[PSLineData] = []
@@ -31,19 +31,21 @@ def parse_ps_line_data(ps_line: str) -> PSLineData:
     return PSLineData(pid, command)
 
 def find_and_kill() -> None:
-    search_criteria = input('WHAT TYPE OF PROCESS TO SEARCH FOR? ')
+    search_criteria = input('WHAT TYPE OF PROCESS SHOULD I SEARCH FOR? ')
     results = run(f'ps aux | grep {search_criteria}')
     if results.stdout is not None:
         parsed_results = parse_ps_data(results.stdout)
-    else:
-        print('No results.')
-        return
 
     print('================')
-    for num, parsed_line_data in enumerate(parsed_results):
-        print(f'{num}) {parsed_line_data}')
-    to_kill = int(input('WHO DO YOU WANT TO KILL?'))
-    run(f'kill {parsed_results[to_kill].pid}')
+    if len(parsed_results) > 0:
+        for num, parsed_line_data in enumerate(parsed_results):
+            print(f'{num}) {parsed_line_data}')
+        to_kill = int(input('WHO DO YOU WANT TO KILL? '))
+        run(f'kill {parsed_results[to_kill].pid}')
+    else:
+        print('No Results')
+
+#find_and_kill()
 
 ##########################################
 
@@ -167,18 +169,6 @@ def is_it_up(host: str) -> None:
         print(output)
 
 
-
-
-
-
-
-###########################################
-if __name__ == '__main__':
-    find_and_kill()
-    is_it_up('10.10.1.1')
-    is_it_up('google.com')
-    #is_it_up('teach.mapnwea.org')
-
-    #is_it_up('10.10.1.3')
-    #is_it_up('copier6')
-    is_it_up('localhost')
+#is_it_up('localhost')
+#is_it_up('google.com')
+is_it_up('udeidhuiduidh')
